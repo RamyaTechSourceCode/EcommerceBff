@@ -1,6 +1,5 @@
 "use client";
 
-import { format } from "node:path";
 import { useState, useEffect } from "react";
 
 export default function ProductModal({
