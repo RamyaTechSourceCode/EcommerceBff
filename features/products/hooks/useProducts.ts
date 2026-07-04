@@ -30,7 +30,7 @@ export function useProducts() {
     await fetchProducts();
   }
 
-  async function updateProduct(id: string, data: Product) {
+  async function updateProduct(id:string, data: Product) {
     await updateProductApi(id, data);
     await fetchProducts();
   }

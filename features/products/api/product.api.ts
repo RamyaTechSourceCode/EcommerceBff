@@ -34,7 +34,7 @@ async function request<T>(url: string, options?: RequestInit): Promise<T> {
 
 // GET all products
 export const getProducts = () =>
-  request<Product[]>("/products");
+  request<Product[]>("/catalogs");
 
 // GET single product
 export const getProduct = (id: number) =>
@@ -48,7 +48,7 @@ export const createProductApi = (data: Partial<Product>) =>
   });
 
 // UPDATE product
-export const updateProductApi = (id: number, data: Partial<Product>) =>
+export const updateProductApi = (id: string, data: Partial<Product>) =>
   request<Product>(`/products/${id}`, {
     method: "PUT",
     body: JSON.stringify(data),

@@ -42,7 +42,7 @@ export default function ProductTable() {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
         {products.map((p) => (
           <div
-            key={p.id}
+            key={p.productId}
             className="bg-white p-5 rounded-xl shadow border"
           >
             <div className="flex justify-between">
@@ -91,11 +91,10 @@ export default function ProductTable() {
               >
                 Edit
               </button>
-
               <button
                 onClick={async () => {
                   if (!confirm("Delete this product?")) return;
-                  await deleteProduct(p.id);
+                  await deleteProduct(p.productId);
                   refetch();
                 }}
                 className="flex-1 bg-red-600 text-white py-2 rounded-lg"

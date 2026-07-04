@@ -1,5 +1,5 @@
 export type Product = {
-  id: string;
+  productId: string;
   name: string;
   description?: string;
   category?: string;
@@ -8,4 +8,4 @@ export type Product = {
   status: "Active" | "Inactive";
 };
 
-export type ProductInput = Omit<Product, "id">;
+export type ProductInput = Omit<Product, "productId">;

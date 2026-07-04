@@ -1,5 +1,6 @@
 "use client";
 
+import { format } from "node:path";
 import { useState, useEffect } from "react";
 
 export default function ProductModal({
@@ -22,7 +23,7 @@ export default function ProductModal({
     name: "",
     description: "",
     price: 0,
-    availableStock: 0,
+    stockQuantity: 0,
     category: "",
     status: "Active",
   });
@@ -36,7 +37,7 @@ export default function ProductModal({
       description: product.description ?? "",
       category: product.category ?? "",
       price: product.price,
-      availableStock: product.availableStock,
+      stockQuantity: product.availableStock ?? 0,
       status: product.status,
     });
     } else {
@@ -45,7 +46,7 @@ export default function ProductModal({
         name: "",
         description: "",
         price: 0,
-        availableStock: 0,
+        stockQuantity: 0,
         category: "",
         status: "Active",
       });
@@ -70,7 +71,7 @@ export default function ProductModal({
     e.preventDefault();
 
     if (isEdit && product) {
-      await updateProduct(product.id, form);
+      await updateProduct(form.id, form);
     } else {
       await createProduct(form);
     }
@@ -112,9 +113,9 @@ export default function ProductModal({
           />
 
           <input
-            name="availableStock"
+            name="stockQuantity"
             type="number"
-            value={form.availableStock}
+            value={form.stockQuantity}
             onChange={handleChange}
             placeholder="Stock"
             className="w-full border p-2 rounded"
@@ -136,6 +137,7 @@ export default function ProductModal({
           >
             <option value="Active">Active</option>
             <option value="Inactive">Inactive</option>
+            <option value="Deleted">Deleted</option>
           </select>
 
           {/* ACTIONS */}
