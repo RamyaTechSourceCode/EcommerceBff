@@ -1,7 +1,7 @@
 import './index.css';
 
 export const metadata = {
-  title: 'Cloud Inventory System',
+  title: 'Ecommerce System',
   description: 'Next.js application secured via .NET YARP Gateway BFF',
 };
 
