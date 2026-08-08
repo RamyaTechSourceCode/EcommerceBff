@@ -1,46 +1,113 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-# EcommerceBff
-=======
-=======
->>>>>>> f9f207d5ba181fca9a3288201085540185cc6c1d
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 💻 E-COMMERCE CLIENT USER INTERFACE
 
-## Getting Started
+A high-performance, enterprise-grade storefront web application built using **React, Next.js, and TypeScript**. This interface serves as the client consumer layer for the distributed microservices ecosystem, featuring native cloud identity integration, centralized data fetch grids, and secure state handling.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🏗️ SYSTEM LAYOUT & INTEGRATION FLOW
+
+The user interface connects directly to backend services through a secure API reverse proxy architecture, eliminating cross-origin mapping conflicts.
+
+```text
+  [ React Client Engine ]
+             │
+             ├─► [ 1. Request Protected Resource ] ──► [ YARP Gateway (BFF) ]
+             │                                                 │
+             ◄─ [ 2. HTTP-Only Cookie Exchanged ] ◄────────────┤ 
+             │                                                 ├─► [ 3. Validate Token / OAuth2 ] ──► [ Azure Entra ID ]
+             │                                                 │
+             ├─► [ 4. Forward Authorized Requests ]            ▼
+             ▼                                      [ Extract JWT from BFF Cache ]
+[ YARP Reverse Proxy Gateway ]                                 │
+             │                                                 │
+             ├─► [ /api/products ] ────────────────────────────┼──► [ Product Service ]
+             ├─► [ /api/orders ]   ────────────────────────────┼──► [ Order Service ]
+             ├─► [ /api/catalogs ] ────────────────────────────┼──► [ Catalog Service ]
+             └─► [ /api/inventory ] ───────────────────────────┘──► [ Inventory Service ]
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### CORE INTERFACE COMPONENTS
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+*   **THE BFF PATTERN USING HTTP-ONLY COOKIES**: Securely handles authorization context by establishing a Backend-for-Frontend topology. The React frontend never stores tokens or secret keys in browser storage. Instead, the YARP gateway manages the OAuth2 handshake, saves the raw JWT tokens in secure server memory, and issues encrypted, `HTTP-Only`, `SameSite=Strict`, and `Secure` cookies to the client browser.
+*   **ROUTE PROTECTION**: Uses Next.js Middleware pipelines to intercept unauthenticated navigation loops and protect private customer account pathways.
+*   **GATEWAY CONSUMPTION**: Proxies all asynchronous requests through the YARP gateway, automatically including the authentication cookie in the header pipeline.
+*   **DATA QUERY STATE**: Powered by React Query to handle client-side caching, automated background refetches, and instantaneous loading state transitions.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 📂 PROJECT DIRECTORY STRUCTURE
 
-To learn more about Next.js, take a look at the following resources:
+The project directory layout scales modularly around domain-driven feature groupings:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+*   **`@/components`**: Holds global user interface layout modules (e.g., `Navbar.tsx`, `Footer.tsx`).
+*   **`@/features`**: Groups components, custom hooks, and state actions around microservice contexts (e.g., `@/features/products/components/ProductGrid.tsx`).
+*   **`@/hooks`**: Isolates shared client utility wrappers (e.g., tracking current auth contexts).
+*   **`@/services`**: Configures global API client configurations and interceptors.
+*   **`@/middleware.ts`**: Protects secure workspace pages at the application root level.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🛠️ LOCAL DEVELOPMENT & QUICKSTART
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### PREREQUISITES
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-<<<<<<< HEAD
->>>>>>> f9f207d (add product)
-=======
->>>>>>> f9f207d5ba181fca9a3288201085540185cc6c1d
+*   [Node.js LTS Version](https://nodejs.org) (v20 or higher recommended)
+*   [Package Manager](https://npmjs.com) (npm or yarn installed)
+
+### 1. CLONE THE REPOSITORY
+```bash
+git clone https://github.com
+cd EcommerceBff
+```
+
+### 2. CONFIGURE LOCAL CONFIGURATION SAFETY
+Create a `.env.local` file inside the root directory to hold your client environment pointers:
+
+```text
+NEXT_PUBLIC_AZURE_AD_CLIENT_ID=YOUR_CLIENT_ID_PLACEHOLDER
+NEXT_PUBLIC_AZURE_AD_TENANT_ID=YOUR_TENANT_ID_PLACEHOLDER
+NEXT_PUBLIC_AZURE_AD_REDIRECT_URI=http://localhost:3000
+NEXT_PUBLIC_API_GATEWAY_URL=http://localhost:5000
+```
+> ⚠️ **SECURITY POLICY**: Never commit actual environment variable values or security client secrets to public repositories.
+
+### 3. INSTALLATION & EXECUTION
+Install project dependencies and execute the development server:
+```bash
+npm install
+npm run dev
+```
+
+---
+
+## 🔬 FRONTEND DESIGN PATTERNS
+
+### SECURE COOKIE-BASED FETCH PIPELINE
+
+All outbound data requests pass through standard HTTP endpoints. The browser natively carries the session cookies, eliminating JavaScript token leakage vectors:
+
+```typescript
+// Example of how you call your other microservices securely:
+fetch(`${process.env.NEXT_PUBLIC_BFF_URL}/api/products`, {
+  credentials: "include" // <--- This carries your auth context automatically
+})
+.then(res => res.json())
+.then(data => console.log(data));
+```
+
+### SCALABLE ALIASED PATH CONFIGURATION
+
+Avoids complex relative reference pollution (`../../components`) by initializing standard path aliasing across `tsconfig.json`:
+
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/components/*": ["components/*"],
+      "@/features/*": ["features/*"],
+      "@/hooks/*": ["hooks/*"]
+    }
+  }
+}
+```
