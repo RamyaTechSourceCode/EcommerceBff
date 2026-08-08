@@ -4,7 +4,7 @@ export default function Home() {
   
   const login = () => {
      const redirectUri = encodeURIComponent(
-    `${window.location.origin}/products`
+    `${window.location.origin}/admin/products`
   );
 
   window.location.href =

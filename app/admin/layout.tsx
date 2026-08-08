@@ -21,6 +21,9 @@ export default function AdminLayout({
           <Link className="block hover:text-blue-300" href="/admin/inventory">
             Inventory
           </Link>
+           <Link className="block hover:text-blue-300" href="/admin/agents">
+            Agents
+          </Link>
         </nav>
       </aside>
 
